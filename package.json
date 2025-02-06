@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "postbuild": "node pos-build-script.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -18,8 +19,13 @@
     "@angular/platform-browser": "^15.2.0",
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
-    "rxjs": "~7.8.0",
+    "@po-ui/ng-components": "^15.15.0",
+    "@po-ui/ng-templates": "^15.15.0",
+    "@totvs/protheus-lib-core": "^15.1.0",
+    "rxjs": "~7.5.5",
+    "subsink": "^1.0.2",
     "tslib": "^2.3.0",
+    "uuid": "^9.0.1",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
@@ -27,6 +33,7 @@
     "@angular/cli": "~15.2.11",
     "@angular/compiler-cli": "^15.2.0",
     "@types/jasmine": "~4.3.0",
+    "@types/uuid": "^10.0.0",
     "jasmine-core": "~4.5.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
