@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { execSync } = require("child_process");
+const archiver = require("archiver");
 const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 const appName = packageJson.name;
 const distPath = path.join(__dirname, "dist");
@@ -25,10 +25,27 @@ fs.cpSync(path.join(distPath, appName), appDistPath, {
   recursive: true,
 });
 
-// Change directory to the protheus_dist folder and zip the contents
-execSync(`cd ${protheusDistPath} && zip -r ${zipFilePath} ${appName}`);
+// Create a file to stream archive data to
+const output = fs.createWriteStream(zipFilePath);
+const archive = archiver("zip", {
+  zlib: { level: 9 }, // Sets the compression level
+});
 
-// Copy the zipped file to the destination folder
-fs.copyFileSync(zipFilePath, destinationPath);
+output.on("close", function () {
+  console.log(`Zipped ${appName} to ${destinationPath}`);
+  // Copy the zipped file to the destination folder
+  fs.copyFileSync(zipFilePath, destinationPath);
+});
 
-console.log(`Zipped ${appName} to ${destinationPath}`);
+archive.on("error", function (err) {
+  throw err;
+});
+
+// Pipe archive data to the file
+archive.pipe(output);
+
+// Append files from the appDistPath directory
+archive.directory(appDistPath, appName);
+
+// Finalize the archive (i.e. we are done appending files but streams have to finish yet)
+archive.finalize();
